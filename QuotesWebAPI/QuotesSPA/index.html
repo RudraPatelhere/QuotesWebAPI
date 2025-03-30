@@ -1,89 +1,167 @@
-﻿<!-- Replace the entire <script> block in your index.html with this -->
-<script>
-    const apiUrl = "/api/quotes";
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotes App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center text-primary">Quotes Collection</h2>
 
-    // Load all quotes
-    async function loadQuotes() {
-        try {
-            const res = await fetch(apiUrl);
-            if (!res.ok) throw new Error("Failed to fetch quotes");
+        <!-- Quotes List -->
+        <div id="quotes-container" class="mt-4"></div>
 
-            const data = await res.json();
-            const container = document.getElementById("quotes-container");
-            container.innerHTML = "";
-
-            if (data.length === 0) {
-                container.innerHTML = "<p class='text-muted text-center'>No quotes yet. Be the first to add one!</p>";
-                return;
-            }
-
-            data.forEach(q => {
-                const div = document.createElement("div");
-                div.className = "card mb-3";
-                div.innerHTML = `
-                    <div class="card-body">
-                        <blockquote class="blockquote mb-0">
-                            <p>${q.text}</p>
-                            <footer class="blockquote-footer">${q.author || "Unknown"}</footer>
-                            <div class="mt-2">
-                                <span class="badge bg-secondary me-2">Likes: ${q.likes}</span>
-                                <button class="btn btn-sm btn-outline-primary" onclick="likeQuote(${q.id})">Like</button>
-                            </div>
-                        </blockquote>
+        <!-- Add New Quote Form -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h5 class="card-title">Add a New Quote</h5>
+                <form id="quote-form">
+                    <div class="mb-3">
+                        <label for="quoteText" class="form-label">Quote Text</label>
+                        <input type="text" class="form-control" id="quoteText" required />
                     </div>
-                `;
-                container.appendChild(div);
-            });
+                    <div class="mb-3">
+                        <label for="quoteAuthor" class="form-label">Author (optional)</label>
+                        <input type="text" class="form-control" id="quoteAuthor" />
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Quote</button>
+                </form>
+            </div>
+        </div>
 
-        } catch (err) {
-            console.error("Error loading quotes:", err);
-        }
-    }
+        <!-- Top Quotes Section -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h5 class="card-title">Top Liked Quotes</h5>
+                <div id="top-quotes-container"></div>
+            </div>
+        </div>
+    </div>
 
-    // Submit quote form
-    document.getElementById("quote-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
+    <script>
+        const apiUrl = "/api/quotes";
 
-        const quote = {
-            text: document.getElementById("quoteText").value,
-            author: document.getElementById("quoteAuthor").value
-        };
+        // Load all quotes
+        async function loadQuotes() {
+            try {
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error("Failed to fetch quotes");
 
-        try {
-            const res = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(quote)
-            });
+                const data = await res.json();
+                const container = document.getElementById("quotes-container");
+                container.innerHTML = "";
 
-            if (res.ok) {
-                this.reset();
-                await loadQuotes();
-            } else {
-                console.error("Failed to add quote:", await res.text());
+                if (data.length === 0) {
+                    container.innerHTML = "<p class='text-muted text-center'>No quotes yet. Be the first to add one!</p>";
+                    return;
+                }
+
+                data.forEach(q => {
+                    const div = document.createElement("div");
+                    div.className = "card mb-3";
+                    div.innerHTML = `
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>${q.text}</p>
+                                    <footer class="blockquote-footer">${q.author || "Unknown"}</footer>
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <span class="badge bg-secondary">Likes: ${q.likes}</span>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="likeQuote(${q.id})">👍 Like</button>
+                                    </div>
+                                </blockquote>
+                            </div>
+                        `;
+                    container.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error("Error loading quotes:", err);
             }
-        } catch (err) {
-            console.error("Error sending quote:", err);
         }
-    });
 
-    // Handle like
-    async function likeQuote(id) {
-        try {
-            const res = await fetch(`${apiUrl}/${id}/like`, {
-                method: "POST"
-            });
+        // Like quote
+        async function likeQuote(id) {
+            try {
+                const res = await fetch(`${apiUrl}/${id}/like`, {
+                    method: "POST"
+                });
 
-            if (res.ok) {
-                await loadQuotes(); // refresh list after liking
-            } else {
-                console.error("Failed to like quote:", await res.text());
+                if (res.ok) {
+                    await loadQuotes();
+                    await loadTopQuotes();
+                } else {
+                    console.error("Failed to like quote");
+                }
+            } catch (err) {
+                console.error("Error liking quote:", err);
             }
-        } catch (err) {
-            console.error("Error liking quote:", err);
         }
-    }
 
-    // Load quotes on initial page load
-    loadQuotes();
-</script>
+        // Load top liked quotes
+        async function loadTopQuotes() {
+            try {
+                const res = await fetch(`${apiUrl}/top?count=10`);
+                if (!res.ok) throw new Error("Failed to fetch top liked quotes");
+
+                const data = await res.json();
+                const container = document.getElementById("top-quotes-container");
+                container.innerHTML = "";
+
+                if (data.length === 0) {
+                    container.innerHTML = "<p class='text-muted'>No top quotes yet.</p>";
+                    return;
+                }
+
+                data.forEach(q => {
+                    const div = document.createElement("div");
+                    div.className = "mb-3 border-bottom pb-2";
+                    div.innerHTML = `
+                            <blockquote class="blockquote">
+                                <p>${q.text}</p>
+                                <footer class="blockquote-footer">${q.author || "Unknown"} - Likes: ${q.likes}</footer>
+                            </blockquote>
+                        `;
+                    container.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error("Error loading top liked quotes:", err);
+            }
+        }
+
+        // Add new quote
+        document.getElementById("quote-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const quote = {
+                text: document.getElementById("quoteText").value,
+                author: document.getElementById("quoteAuthor").value
+            };
+
+            try {
+                const res = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(quote)
+                });
+
+                if (res.ok) {
+                    this.reset();
+                    await loadQuotes();
+                    await loadTopQuotes();
+                } else {
+                    console.error("Failed to add quote");
+                }
+            } catch (err) {
+                console.error("Error sending quote:", err);
+            }
+        });
+
+        // Initial load
+        loadQuotes();
+        loadTopQuotes();
+    </script>
+</body>
+</html>
