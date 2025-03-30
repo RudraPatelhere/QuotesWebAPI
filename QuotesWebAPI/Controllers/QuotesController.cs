@@ -113,5 +113,63 @@ namespace QuotesWebAPI.Controllers
                 .Take(count)
                 .ToListAsync();
         }
+
+        // ✅ NEW: GET all tags
+        [HttpGet("/api/tags")]
+        public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+        {
+            return await _context.Tags.ToListAsync();
+        }
+
+        // ✅ NEW: Assign a tag to a quote
+        [HttpPost("{id}/tags")]
+        public async Task<IActionResult> AssignTagToQuote(int id, [FromBody] string tagName)
+        {
+            var quote = await _context.Quotes
+                .Include(q => q.TagAssignments)
+                .ThenInclude(ta => ta.Tag)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (quote == null)
+                return NotFound();
+
+            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+            if (tag == null)
+            {
+                tag = new Tag { Name = tagName };
+                _context.Tags.Add(tag);
+                await _context.SaveChangesAsync();
+            }
+
+            if (quote.TagAssignments.Any(ta => ta.TagId == tag.Id))
+                return BadRequest("Tag already assigned.");
+
+            _context.TagAssignments.Add(new TagAssignment
+            {
+                QuoteId = quote.Id,
+                TagId = tag.Id
+            });
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // ✅ NEW: Get quotes by tag name
+        [HttpGet("tag/{tagName}")]
+        public async Task<ActionResult<IEnumerable<Quote>>> GetQuotesByTag(string tagName)
+        {
+            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+            if (tag == null)
+                return NotFound("Tag not found.");
+
+            var quotes = await _context.Quotes
+                .Include(q => q.TagAssignments)
+                .ThenInclude(ta => ta.Tag)
+                .Where(q => q.TagAssignments.Any(ta => ta.TagId == tag.Id))
+                .ToListAsync();
+
+            return quotes;
+        }
     }
 }
