@@ -35,9 +35,7 @@ namespace QuotesWebAPI.Controllers
                 .FirstOrDefaultAsync(q => q.Id == id);
 
             if (quote == null)
-            {
                 return NotFound();
-            }
 
             return quote;
         }
