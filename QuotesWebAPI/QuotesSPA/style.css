@@ -1,25 +1,163 @@
-﻿.tag {
-    display: inline-block;
-    background-color: #e0e0e0;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-right: 5px;
-    font-size: 0.85em;
+﻿/* Base Styling */
+body {
+    background-color: #f9f9f9;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+h2 {
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    border: none;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+blockquote p {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+blockquote-footer {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.btn-sm {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.btn-success {
+    font-weight: 500;
+    padding: 6px 16px;
+}
+
+input.form-control {
+    font-size: 0.95rem;
+}
+
+.text-info {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Tag Styling */
+.tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin: 2px 6px 2px 0;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+    .tag:hover {
+        background-color: #cfd1d4;
+    }
+
+/* Tag Suggestions Dropdown */
 #tagSuggestions {
     position: absolute;
     z-index: 999;
     background: white;
     border: 1px solid #ccc;
     width: 100%;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 5px;
+    margin-top: 2px;
+    transition: all 0.2s ease;
 }
 
     #tagSuggestions div {
-        padding: 5px;
+        padding: 8px 10px;
         cursor: pointer;
+        font-size: 0.9rem;
     }
 
         #tagSuggestions div:hover {
             background-color: #f0f0f0;
         }
+
+/* Quote Grid (Bootstrap based) */
+#quotes-container.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Dark Mode Support */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+    body.dark-mode .card {
+        background-color: #1e1e1e;
+    }
+
+    body.dark-mode blockquote p,
+    body.dark-mode blockquote-footer,
+    body.dark-mode .badge.bg-secondary,
+    body.dark-mode .tag {
+        color: #e0e0e0;
+    }
+
+    body.dark-mode .tag {
+        background-color: #333;
+    }
+
+    body.dark-mode #tagSuggestions {
+        background-color: #1e1e1e;
+        color: #eee;
+        border-color: #555;
+    }
+
+        body.dark-mode #tagSuggestions div:hover {
+            background-color: #333;
+        }
+
+    body.dark-mode input.form-control {
+        background-color: #333;
+        color: #eee;
+        border-color: #555;
+    }
+
+    body.dark-mode .btn-outline-primary {
+        color: #90caf9;
+        border-color: #90caf9;
+    }
+
+    body.dark-mode .btn-outline-warning {
+        color: #ffb74d;
+        border-color: #ffb74d;
+    }
+
+    body.dark-mode .btn-outline-danger {
+        color: #ef5350;
+        border-color: #ef5350;
+    }

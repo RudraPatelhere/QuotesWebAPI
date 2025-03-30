@@ -1,22 +1,29 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using QuotesWebAPI;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DB context
+// ✅ Configure EF Core with SQL Server
 builder.Services.AddDbContext<QuotesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QuotesDB"))
 );
 
-// Add controllers
-builder.Services.AddControllers();
+// ✅ Configure controllers with circular reference support
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Ignores loops during JSON serialization (fixes circular reference errors)
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
-// Swagger
+// ✅ Enable Swagger (for testing API endpoints)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS
+// ✅ Allow all CORS for development use
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -29,14 +36,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Serve Swagger in development
+// ✅ Swagger UI available only in development mode
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Set up SPA default static file routing from QuotesSPA folder
+// ✅ Serve static frontend files from QuotesSPA folder
 var spaPath = Path.Combine(Directory.GetCurrentDirectory(), "QuotesSPA");
 
 app.UseDefaultFiles(new DefaultFilesOptions
@@ -51,10 +58,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = ""
 });
 
+// ✅ Middleware setup
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 
+// ✅ Map controller routes
 app.MapControllers();
 
 app.Run();

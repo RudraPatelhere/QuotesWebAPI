@@ -1,5 +1,5 @@
-﻿const apiUrl = "/api/quotes";
-const tagApiUrl = "/api/tags";
+﻿const apiUrl = "https://localhost:7149/api/quotes";
+const tagApiUrl = "https://localhost:7149/api/tags";
 
 // Load all quotes
 async function loadQuotes() {
@@ -12,28 +12,34 @@ async function loadQuotes() {
         container.innerHTML = "";
 
         data.forEach(q => {
-            const div = document.createElement("div");
-            div.className = "card mb-3";
-            div.innerHTML = `
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p id="quote-text-${q.id}">${q.text}</p>
-                        <footer class="blockquote-footer" id="quote-author-${q.id}">${q.author || "Unknown"}</footer>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span class="badge bg-secondary">Likes: ${q.likes}</span>
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="likeQuote(${q.id})">👍 Like</button>
-                                <button class="btn btn-sm btn-outline-warning me-1" onclick="enableEdit(${q.id})">✏️ Edit</button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteQuote(${q.id})">🗑️ Delete</button>
+            const col = document.createElement("div");
+            col.className = "col-md-6 col-lg-4";
+
+            const tags = (q.tagAssignments || [])
+                .map(t => `<span class="tag" onclick="filterByTag('${t.tag.name}')">${t.tag.name}</span>`)
+                .join("");
+
+            col.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p id="quote-text-${q.id}">${q.text}</p>
+                            <footer class="blockquote-footer" id="quote-author-${q.id}">${q.author || "Unknown"}</footer>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="badge bg-secondary">Likes: ${q.likes}</span>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="likeQuote(${q.id})">Like</button>
+                                    <button class="btn btn-sm btn-outline-warning me-1" onclick="enableEdit(${q.id})">Edit</button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteQuote(${q.id})">Delete</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mt-2">
-                            ${q.tagAssignments.map(t => `<span class="tag" onclick="filterByTag('${t.tag.name}')">${t.tag.name}</span>`).join("")}
-                        </div>
-                    </blockquote>
+                            <div class="mt-2">${tags}</div>
+                        </blockquote>
+                    </div>
                 </div>
             `;
-            container.appendChild(div);
+
+            container.appendChild(col);
         });
     } catch (err) {
         console.error("Error loading quotes:", err);
@@ -88,7 +94,7 @@ function enableEdit(id) {
     textEl.innerHTML = `<input type="text" class="form-control mb-2" id="edit-text-${id}" value="${currentText}" />`;
     authorEl.innerHTML = `
         <input type="text" class="form-control" id="edit-author-${id}" value="${currentAuthor === "Unknown" ? "" : currentAuthor}" />
-        <button class="btn btn-sm btn-success mt-2" onclick="saveEdit(${id})">💾 Save</button>`;
+        <button class="btn btn-sm btn-success mt-2" onclick="saveEdit(${id})">Save</button>`;
 }
 
 // Save edited quote
@@ -195,28 +201,33 @@ async function filterByTag(tagName) {
         }
 
         data.forEach(q => {
-            const div = document.createElement("div");
-            div.className = "card mb-3";
-            div.innerHTML = `
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p>${q.text}</p>
-                        <footer class="blockquote-footer">${q.author || "Unknown"}</footer>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span class="badge bg-secondary">Likes: ${q.likes}</span>
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="likeQuote(${q.id})">👍 Like</button>
-                                <button class="btn btn-sm btn-outline-warning me-1" onclick="enableEdit(${q.id})">✏️ Edit</button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteQuote(${q.id})">🗑️ Delete</button>
+            const col = document.createElement("div");
+            col.className = "col-md-6 col-lg-4";
+
+            const tags = (q.tagAssignments || [])
+                .map(t => `<span class="tag" onclick="filterByTag('${t.tag.name}')">${t.tag.name}</span>`)
+                .join("");
+
+            col.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>${q.text}</p>
+                            <footer class="blockquote-footer">${q.author || "Unknown"}</footer>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="badge bg-secondary">Likes: ${q.likes}</span>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="likeQuote(${q.id})">Like</button>
+                                    <button class="btn btn-sm btn-outline-warning me-1" onclick="enableEdit(${q.id})">Edit</button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteQuote(${q.id})">Delete</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mt-2">
-                            ${q.tagAssignments.map(t => `<span class="tag" onclick="filterByTag('${t.tag.name}')">${t.tag.name}</span>`).join("")}
-                        </div>
-                    </blockquote>
+                            <div class="mt-2">${tags}</div>
+                        </blockquote>
+                    </div>
                 </div>
             `;
-            container.appendChild(div);
+            container.appendChild(col);
         });
     } catch (err) {
         console.error("Error filtering by tag:", err);
@@ -224,6 +235,6 @@ async function filterByTag(tagName) {
     }
 }
 
-// Load initially
+// Initial load
 loadQuotes();
 loadTopQuotes();
