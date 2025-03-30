@@ -1,0 +1,25 @@
+﻿.tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 5px;
+    font-size: 0.85em;
+}
+
+#tagSuggestions {
+    position: absolute;
+    z-index: 999;
+    background: white;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+    #tagSuggestions div {
+        padding: 5px;
+        cursor: pointer;
+    }
+
+        #tagSuggestions div:hover {
+            background-color: #f0f0f0;
+        }
