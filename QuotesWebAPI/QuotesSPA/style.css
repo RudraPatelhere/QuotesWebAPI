@@ -1,28 +1,36 @@
 ﻿/* Base Styling */
 body {
-    background-color: #f9f9f9;
+    background-color: #f5f9fc; /* Softer background tone */
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Headings */
 h2 {
     font-weight: 600;
     margin-bottom: 30px;
     text-align: center;
+    color: #212529; /* Darker text for contrast */
 }
 
+/* Cards */
 .card {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* Subtle shadow */
     border-radius: 12px;
     border: none;
-    background-color: #fff;
-    transition: background-color 0.3s;
+    background-color: #ffffff;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+    .card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07); /* Slightly deeper shadow on hover */
+    }
 
 .card-body {
     padding: 1.5rem;
 }
 
+/* Blockquotes */
 blockquote p {
     font-size: 1.1rem;
     font-style: italic;
@@ -33,16 +41,18 @@ blockquote p {
 blockquote-footer {
     margin-top: 8px;
     font-size: 0.9rem;
-    color: #666;
+    color: #777;
 }
 
+/* Badges */
 .badge.bg-secondary {
-    background-color: #6c757d;
+    background-color: #657786; /* Subtle gray-blue */
     font-size: 0.85rem;
     padding: 5px 10px;
     border-radius: 12px;
 }
 
+/* Buttons */
 .btn-sm {
     font-size: 0.8rem;
     padding: 4px 10px;
@@ -52,21 +62,39 @@ blockquote-footer {
 .btn-success {
     font-weight: 500;
     padding: 6px 16px;
+    background-color: #2fc98f; /* Fresh green tone */
+    border-color: #2fc98f;
 }
 
+    .btn-success:hover {
+        background-color: #28ad7d;
+        border-color: #28ad7d;
+    }
+
+/* Form Inputs */
 input.form-control {
     font-size: 0.95rem;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+    input.form-control:focus {
+        border-color: #2fc98f;
+        box-shadow: 0 0 0 0.2rem rgba(47, 201, 143, 0.25);
+    }
+
+/* Informational Text */
 .text-info {
     margin-bottom: 10px;
     font-weight: 500;
+    color: #2fc98f; /* Use the accent color */
 }
 
 /* Tag Styling */
 .tag {
     display: inline-block;
-    background-color: #e0e0e0;
+    background-color: #e2e6ea; /* Light, subtle tone */
     color: #333;
     padding: 4px 12px;
     border-radius: 20px;
@@ -77,14 +105,14 @@ input.form-control {
 }
 
     .tag:hover {
-        background-color: #cfd1d4;
+        background-color: #cfd4d9;
     }
 
 /* Tag Suggestions Dropdown */
 #tagSuggestions {
     position: absolute;
     z-index: 999;
-    background: white;
+    background: #fff;
     border: 1px solid #ccc;
     width: 100%;
     max-height: 150px;
@@ -101,10 +129,10 @@ input.form-control {
     }
 
         #tagSuggestions div:hover {
-            background-color: #f0f0f0;
+            background-color: #f1f1f1;
         }
 
-/* Quote Grid (Bootstrap based) */
+/* Quote Grid (Bootstrap-based) */
 #quotes-container.row {
     margin-left: 0;
     margin-right: 0;
@@ -161,3 +189,13 @@ body.dark-mode {
         color: #ef5350;
         border-color: #ef5350;
     }
+
+    body.dark-mode .btn-success {
+        background-color: #29ad7d;
+        border-color: #29ad7d;
+    }
+
+/* Smooth transitions for dark mode elements */
+.card, .tag, input.form-control, .badge.bg-secondary, .btn-success {
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
