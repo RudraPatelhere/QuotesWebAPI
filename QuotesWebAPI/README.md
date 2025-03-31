@@ -46,14 +46,14 @@ A full-stack application for creating, managing, and viewing quotes. Built with 
 ## Screenshots
 
 **1. Front-End SPA**  
-![Quotes SPA Screenshot](assets/SS_1.png)
+![Quotes SPA Screenshot](QuotesWebAPI/assets/SS_1.png)
 
 Displays the grid of quotes, plus a form to add new ones and a top-liked section.
 
 <br/>
 
 **2. Python CLI**  
-![Python CLI Screenshot](assets/SS_2.png)
+![Python CLI Screenshot](QuotesWebAPI/assets/SS_2.png)
 
 Shows the console-based menu for loading quotes, adding new ones, and displaying random quotes.
 
